@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>MM Chicken — Mmm... Sarap!</title>
+<meta name="description" content="MM Chicken. Crispy chicken bits, buckets, and iced coladas. Order now." />
+<meta name="theme-color" content="#8B1A1A" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="MM Chicken" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --maroon-deep:#4C0B0B;
+    --red-mid:#A81318;
+    --red-bright:#D81E24;
+    --ember:#F2790C;
+    --gold:#FFC93C;
+    --cream:#FFF6E9;
+    --ink:#241008;
+    --purple:#7B2FBF;
+    --shadow-ink: rgba(36,16,8,.35);
+    --radius-lg: 26px;
+    --radius-md: 16px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0;
+    font-family:'Nunito', sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(120% 90% at 50% 0%, var(--red-bright) 0%, var(--red-mid) 42%, var(--maroon-deep) 100%);
+    min-height:100vh;
+    overflow-x:hidden;
+    padding-bottom:78px; /* room for mobile tab bar */
+  }
+  a{color:inherit;}
+  .diag-lines{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.35;
+    background-image:
+      repeating-linear-gradient(115deg, transparent 0 78px, var(--purple) 78px 80px, transparent 80px 190px),
+      repeating-linear-gradient(115deg, transparent 0 130px, var(--gold) 130px 131.5px, transparent 131.5px 260px);
+  }
+  .wrap{position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:0 20px;}
+
+  /* Top bar */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px;
+    background:rgba(76,11,11,.72);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .brand img,
+  .brand svg{width:42px; height:42px; border-radius:12px; background:var(--cream);}
+  .brand span{font-family:'Baloo 2', sans-serif; font-weight:800; font-size:1.15rem; letter-spacing:.3px;}
+  .install-btn{
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:.85rem;
+    background:var(--gold); color:var(--ink); border:none; border-radius:100px;
+    padding:9px 16px; cursor:pointer; display:none; align-items:center; gap:6px;
+    box-shadow:0 4px 0 #C9931A;
+  }
+  .install-btn.show{display:inline-flex;}
+  .install-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #C9931A;}
+
+  /* Hero */
+  .hero{
+    text-align:center; padding:56px 20px 40px; position:relative;
+  }
+  .eyebrow{
+    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.85rem;
+    color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px;
+  }
+  .hero h1{
+    font-family:'Titan One', cursive;
+    font-size:clamp(2.6rem, 11vw, 5rem);
+    line-height:0.95;
+    margin:0 0 4px;
+    color:var(--cream);
+    -webkit-text-stroke:3px var(--ink);
+    paint-order: stroke fill;
+    text-shadow: 4px 6px 0 rgba(0,0,0,.25);
+    transform:rotate(-2deg);
+  }
+  .hero h1 .pop{
+    display:block;
+    color:var(--gold);
+    font-size:0.5em;
+    -webkit-text-stroke:2px var(--ink);
+    transform:rotate(3deg) translateY(-4px);
+  }
+  .hero p.tag{
+    font-size:1.05rem; font-weight:700; max-width:480px; margin:14px auto 26px;
+    color:var(--cream); opacity:.92;
+  }
+  .cta-row{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+  .btn{
+    font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1rem;
+    padding:14px 26px; border-radius:100px; text-decoration:none; display:inline-block;
+    border:none; cursor:pointer;
+  }
+  .btn-primary{background:var(--ember); color:var(--cream); box-shadow:0 5px 0 #B85906;}
+  .btn-primary:active{transform:translateY(4px); box-shadow:0 1px 0 #B85906;}
+  .btn-ghost{background:transparent; color:var(--cream); border:2.5px solid var(--cream); box-shadow:0 5px 0 rgba(255,255,255,.25);}
+  .btn-ghost:active{transform:translateY(4px); box-shadow:0 1px 0 rgba(255,255,255,.25);}
+
+  .mascot{width:150px; margin:8px auto 0; animation:bob 3.2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-10px) rotate(2deg);}}
+  .steam{position:absolute; opacity:.5;}
+  .steam.s1{top:20px; left:14%; animation:rise 4s ease-in-out infinite;}
+  .steam.s2{top:40px; right:16%; animation:rise 4s ease-in-out infinite 1.3s;}
+  @keyframes rise{0%{transform:translateY(0) scale(1); opacity:.6;} 100%{transform:translateY(-40px) scale(1.3); opacity:0;}}
+
+  /* Section headers */
+  .section{padding:44px 20px;}
+  .section h2{
+    font-family:'Titan One', cursive; font-size:clamp(1.8rem,6vw,2.5rem);
+    text-align:center; margin:0 0 6px; -webkit-text-stroke:2px var(--ink); paint-order:stroke fill;
+    text-shadow:3px 4px 0 rgba(0,0,0,.22);
+  }
+  .section .sub{text-align:center; opacity:.85; font-weight:700; margin:0 0 30px;}
+
+  /* Menu */
+  .menu-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:20px;
+  }
+  .card{
+    background:var(--cream); color:var(--ink); border-radius:var(--radius-lg);
+    padding:20px; position:relative; box-shadow:0 10px 0 rgba(0,0,0,.28);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .card .icon-wrap{
+    width:100%; height:110px; border-radius:var(--radius-md);
+    background:linear-gradient(135deg, var(--gold), var(--ember));
+    display:flex; align-items:center; justify-content:center; margin-bottom:6px;
+  }
+  .card .photo{
+    width:100%; aspect-ratio:4/3;
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    background:#000;
+    margin-bottom:12px;
+    position:relative;
+  }
+  .card .photo img{
+    width:100%; height:100%; object-fit:cover;
+    display:block;
+    transition:transform .35s ease;
+  }
+  .card:hover .photo img{transform:scale(1.03);}
+  .card h3{font-family:'Baloo 2',sans-serif; font-size:1.25rem; margin:0;}
+  .card p{margin:0; font-size:.9rem; font-weight:600; opacity:.8; flex-grow:1;}
+  .price-badge{
+    position:absolute; top:-14px; right:-10px;
+    background:var(--red-bright); color:var(--cream);
+    font-family:'Titan One',cursive; font-size:.95rem;
+    width:66px; height:66px; display:flex; align-items:center; justify-content:center;
+    text-align:center; line-height:1.05;
+    clip-path: polygon(50% 0%, 61% 15%, 80% 8%, 82% 28%, 100% 35%, 88% 50%, 100% 65%, 82% 72%, 80% 92%, 61% 85%, 50% 100%, 39% 85%, 20% 92%, 18% 72%, 0% 65%, 12% 50%, 0% 35%, 18% 28%, 20% 8%, 39% 15%);
+    transform:rotate(-8deg);
+    box-shadow:0 4px 6px rgba(0,0,0,.3);
+  }
+  .card .order-link{
+    margin-top:6px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.9rem;
+    color:var(--red-bright); text-decoration:none; display:inline-flex; align-items:center; gap:4px;
+  }
+
+
+  /* Steps */
+  .steps{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px;}
+  .step{
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
+    border-radius:var(--radius-md); padding:22px 18px; text-align:center;
+  }
+  .step .num{
+    font-family:'Titan One',cursive; font-size:1.6rem; color:var(--gold);
+    -webkit-text-stroke:1.5px var(--ink); paint-order:stroke fill; display:block; margin-bottom:8px;
+  }
+  .step h4{font-family:'Baloo 2',sans-serif; margin:0 0 6px; font-size:1.05rem;}
+  .step p{margin:0; font-size:.88rem; opacity:.85; font-weight:600;}
+
+  /* Install section */
+  .install-card{
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
+    border-radius:var(--radius-lg); padding:30px 24px; text-align:center; max-width:560px; margin:0 auto;
+  }
+  .install-card img{width:64px; margin-bottom:10px; border-radius:14px;}
+  .platform-tabs{display:flex; justify-content:center; gap:8px; margin:16px 0 10px; flex-wrap:wrap;}
+  .tab-btn{
+    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.85rem;
+    background:transparent; border:2px solid rgba(255,255,255,.3); color:var(--cream);
+    padding:8px 16px; border-radius:100px; cursor:pointer;
+  }
+  .tab-btn.active{background:var(--gold); color:var(--ink); border-color:var(--gold);}
+  .tab-panel{display:none; text-align:left; font-size:.9rem; font-weight:600; line-height:1.6;}
+  .tab-panel.active{display:block;}
+  .tab-panel ol{margin:8px 0 0; padding-left:20px;}
+
+  /* Footer */
+  footer{padding:40px 20px 20px; text-align:center;}
+  .socials{display:flex; gap:14px; justify-content:center; margin:14px 0; flex-wrap:wrap;}
+  .social-pill{
+    font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.85rem;
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
+    padding:9px 16px; border-radius:100px; text-decoration:none;
+  }
+  footer .fine{opacity:.6; font-size:.78rem; margin-top:20px;}
+
+  /* Mobile app-style tab bar */
+  .tabbar{
+    position:fixed; bottom:0; left:0; right:0; z-index:30;
+    background:rgba(30,6,6,.92); backdrop-filter:blur(10px);
+    display:flex; justify-content:space-around; align-items:center;
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    border-top:1px solid rgba(255,255,255,.1);
+  }
+  .tabbar a{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    text-decoration:none; color:var(--cream); opacity:.7; font-size:.68rem;
+    font-family:'Baloo 2',sans-serif; font-weight:700;
+  }
+  .tabbar a.active, .tabbar a:active{opacity:1; color:var(--gold);}
+  .tabbar svg{width:22px; height:22px;}
+
+  @media(min-width:860px){
+    .tabbar{display:none;}
+    body{padding-bottom:0;}
+  }
+  @media(max-width:859px){
+    .install-btn{display:none !important;}
+  }
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+<div class="diag-lines"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top">
+    <img src="icon-180.png" alt="MM Chicken logo" />
+    <span>MM CHICKEN</span>
+  </a>
+  <button class="install-btn" id="installBtn">⬇ Install App</button>
+</header>
+
+<main class="wrap" id="top">
+
+  <section class="hero">
+    <svg class="steam s1" width="30" height="40" viewBox="0 0 30 40"><path d="M15 40 C5 30 25 22 15 12 C5 2 20 -4 20 -4" stroke="#FFF6E9" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+    <svg class="steam s2" width="30" height="40" viewBox="0 0 30 40"><path d="M15 40 C25 30 5 22 15 12 C25 2 10 -4 10 -4" stroke="#FFC93C" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+
+    <p class="eyebrow">Est. flavor town</p>
+    <h1>MMMM...<span class="pop">SARAP!</span></h1>
+    <p class="tag">Crispy fried chicken, loaded bowl bits, and ice-cold coladas. Order straight from your phone — no app store required.</p>
+
+    <svg class="mascot" viewBox="0 0 172 169" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MM Chicken mascot">
+      <ellipse cx="86" cy="150" rx="50" ry="8" fill="rgba(0,0,0,.25)"/>
+      <path d="M60 60 Q40 30 65 20 Q75 10 90 20 Q115 25 105 55 Q120 60 118 80 Q125 100 105 115 L95 150 L60 150 L55 115 Q35 105 40 85 Q35 65 60 60 Z" fill="#FFC93C" stroke="#241008" stroke-width="4"/>
+      <circle cx="80" cy="45" r="4" fill="#241008"/>
+      <path d="M95 45 Q108 42 108 50 Q108 56 95 52 Z" fill="#F2790C" stroke="#241008" stroke-width="3"/>
+      <path d="M70 18 Q75 5 80 18 Q85 4 88 18" stroke="#D81E24" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <div class="cta-row">
+      <a href="#menu" class="btn btn-primary">🍗 See the menu</a>
+      <a href="#order" class="btn btn-ghost">Order now</a>
+    </div>
+  </section>
+
+  <section class="section reveal" id="menu">
+    <h2>The lineup</h2>
+    <p class="sub">Everything that made the neighborhood say "Mmm."</p>
+    <div class="menu-grid">
+
+      <div class="card">
+        <span class="price-badge">₱139</span>
+        <div class="photo">
+          <img src="bits.jpeg" alt="Chick Bits" />
+        </div>
+        <h3>CHICK BITS</h3>
+        <p>Crispy chicken bits piled over rice, made for a fast, no-mess lunch.</p>
+        <a class="order-link" href="#order">Order this →</a>
+      </div>
+
+      <div class="card">
+        <span class="price-badge">₱59</span>
+        <div class="photo">
+          <img src="mmmlamig.jpeg" alt="MMMLAMIG" />
+        </div>
+        <h3>MMMLAMIG</h3>
+        <p>Frozen fruit refresher, blended thick and served ice-cold.</p>
+        <a class="order-link" href="#order">Order this →</a>
+      </div>
+
+      <div class="card">
+        <span class="price-badge">₱199</span>
+        <div class="photo">
+          <img src="bucket.jpeg" alt="Chicken Bucket" />
+        </div>
+        <h3>M-M BUCKET</h3>
+        <p>The full spread — golden, crispy, and made for sharing.</p>
+        <a class="order-link" href="#order">Order this →</a>
+      </div>
+
+      <div class="card">
+        <span class="price-badge">₱199</span>
+        <div class="photo">
+          <img src="wings.jpeg" alt="Mega Wings" />
+        </div>
+        <h3>MEGA WINGS</h3>
+        <p>Jumbo crispy wings piled high — golden, saucy-ready, and made to share.</p>
+        <a class="order-link" href="#order">Order this →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section reveal" id="order">
+    <h2>How to order</h2>
+    <p class="sub">Two steps, no delivery app required.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="num">1</span>
+        <h4>Message us</h4>
+        <p>Send a message on Facebook or Instagram, or call/text us directly.</p>
+      </div>
+      <div class="step step-link">
+        <span class="num">2</span>
+        <h4>Order via App</h4>
+        <p>Find us on Grab or foodpanda, or order directly and pick how you'll pay.</p>
+        <a class="btn btn-primary" href="order-via-app.html" target="_blank" rel="noopener" style="margin-top:10px;">Order via App ↗</a>
+      </div>
+    </div>
+    <div class="cta-row" style="margin-top:26px;">
+      <a class="btn btn-primary" href="tel:+639197890675">📞 Call / Text 0919 789 0675</a>
+    </div>
+  </section>
+
+  <section class="section reveal" id="install">
+    <h2>Get the app feel</h2>
+    <p class="sub">Add MM Chicken to your home screen — opens like an app, no store needed.</p>
+    <div class="install-card">
+      <img src="icon-192.png" alt="MM Chicken icon" />
+      <div>
+        <button class="btn btn-primary" id="installBtnCard" style="display:none;">⬇ Install now</button>
+      </div>
+      <div class="platform-tabs">
+        <button class="tab-btn active" data-tab="android">Android</button>
+        <button class="tab-btn" data-tab="ios">iPhone</button>
+        <button class="tab-btn" data-tab="desktop">Desktop</button>
+      </div>
+      <div class="tab-panel active" data-panel="android">
+        <ol>
+          <li>Tap the <strong>Install App</strong> button above (or the menu ⋮ in Chrome).</li>
+          <li>Choose <strong>"Install"</strong> or <strong>"Add to Home screen."</strong></li>
+          <li>MM Chicken now opens full-screen from your home screen.</li>
+        </ol>
+      </div>
+      <div class="tab-panel" data-panel="ios">
+        <ol>
+          <li>Open this page in <strong>Safari</strong>.</li>
+          <li>Tap the <strong>Share</strong> icon (square with an arrow).</li>
+          <li>Scroll down and tap <strong>"Add to Home Screen."</strong></li>
+        </ol>
+      </div>
+      <div class="tab-panel" data-panel="desktop">
+        <ol>
+          <li>Look for the <strong>install icon</strong> in your browser's address bar.</li>
+          <li>Click it, then confirm <strong>"Install."</strong></li>
+          <li>MM Chicken opens in its own window, like a desktop app.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="socials">
+    <a class="social-pill" href="https://www.facebook.com/mmchicken" target="_blank" rel="noopener">Facebook: MM Chicken</a>
+    <a class="social-pill" href="https://www.instagram.com/mm.chick" target="_blank" rel="noopener">Instagram: @mm.chick</a>
+    <a class="social-pill" href="tel:+639197890675">📞 0919 789 0675</a>
+  </div>
+  <p class="fine">Verify the Facebook and Instagram links above point to your real profiles before publishing. © 2026 MM Chicken.</p>
+</footer>
+
+<nav class="tabbar">
+  <a href="#top" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>
+    Home
+  </a>
+  <a href="#menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18"/></svg>
+    Menu
+  </a>
+  <a href="#order">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h7.4a2 2 0 0 0 2-1.6L20 7H6"/></svg>
+    Order
+  </a>
+  <a href="#install">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+    Install
+  </a>
+</nav>
+
+<script>
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+
+  // Install prompt handling (Chrome / Android / Desktop Chromium)
+  let deferredPrompt = null;
+  const installBtn = document.getElementById('installBtn');
+  const installBtnCard = document.getElementById('installBtnCard');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.classList.add('show');
+    installBtnCard.style.display = 'inline-block';
+  });
+
+  async function doInstall() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.classList.remove('show');
+    installBtnCard.style.display = 'none';
+  }
+  installBtn.addEventListener('click', doInstall);
+  installBtnCard.addEventListener('click', doInstall);
+
+  window.addEventListener('appinstalled', () => {
+    installBtn.classList.remove('show');
+    installBtnCard.style.display = 'none';
+  });
+
+  // Platform tabs on install section
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach((b) => b.classList.remove('active'));
+      panels.forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`.tab-panel[data-panel="${btn.dataset.tab}"]`).classList.add('active');
+    });
+  });
+
+  // Auto-select iOS tab if on iOS
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (isIOS) {
+    document.querySelector('.tab-btn[data-tab="ios"]').click();
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach((el) => io.observe(el));
+
+  // Active tab bar highlight
+  const tabLinks = document.querySelectorAll('.tabbar a');
+  const sections = ['top','menu','order','install'].map((id) => document.getElementById(id));
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        tabLinks.forEach((l) => l.classList.remove('active'));
+        const match = document.querySelector(`.tabbar a[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.5 });
+  sections.forEach((s) => s && navObserver.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Order via App — MM Chicken</title>
+<meta name="theme-color" content="#8B1A1A" />
+<link rel="icon" href="icon-32.png" sizes="32x32" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --maroon-deep:#4C0B0B;
+    --red-mid:#A81318;
+    --red-bright:#D81E24;
+    --ember:#F2790C;
+    --gold:#FFC93C;
+    --cream:#FFF6E9;
+    --ink:#241008;
+    --purple:#7B2FBF;
+    --radius-lg:26px;
+    --radius-md:16px;
+  }
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0; min-height:100vh; font-family:'Nunito', sans-serif; color:var(--cream);
+    background:radial-gradient(120% 90% at 50% 0%, var(--red-bright) 0%, var(--red-mid) 42%, var(--maroon-deep) 100%);
+    display:flex; flex-direction:column;
+  }
+  .diag-lines{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.35;
+    background-image:
+      repeating-linear-gradient(115deg, transparent 0 78px, var(--purple) 78px 80px, transparent 80px 190px),
+      repeating-linear-gradient(115deg, transparent 0 130px, var(--gold) 130px 131.5px, transparent 131.5px 260px);
+  }
+  .topbar{
+    position:relative; z-index:1; display:flex; align-items:center; gap:10px;
+    padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .topbar img{width:36px; height:36px; border-radius:10px; background:var(--cream);}
+  .topbar span{font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1.05rem;}
+  .close-tab{
+    margin-left:auto; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:.85rem;
+    color:var(--cream); opacity:.8; text-decoration:none; border:1px solid rgba(255,255,255,.25);
+    padding:7px 14px; border-radius:100px;
+  }
+  main{position:relative; z-index:1; max-width:520px; margin:0 auto; padding:32px 20px 60px; flex:1; width:100%;}
+  h1{
+    font-family:'Titan One', cursive; text-align:center; font-size:clamp(1.8rem,7vw,2.4rem);
+    -webkit-text-stroke:2.5px var(--ink); paint-order:stroke fill;
+    text-shadow:3px 4px 0 rgba(0,0,0,.25); margin:0 0 6px;
+  }
+  .sub{text-align:center; font-weight:700; opacity:.9; margin:0 0 34px;}
+
+  .group{margin-bottom:34px;}
+  .group h2{
+    font-family:'Baloo 2',sans-serif; font-size:1.05rem; margin:0 0 4px; text-align:center;
+  }
+  .group .hint{text-align:center; font-size:.85rem; opacity:.75; font-weight:600; margin:0 0 16px;}
+
+  .option-row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center;}
+  .option{
+    font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1rem;
+    color:var(--cream); border:none; cursor:pointer; border-radius:18px;
+    padding:18px 22px; min-width:150px; flex:1 1 150px; max-width:220px;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    box-shadow:0 6px 0 rgba(0,0,0,.3);
+    transition:transform .12s ease, box-shadow .12s ease, filter .15s ease;
+  }
+  .option img{
+    width:48px; height:48px; object-fit:contain;
+    border-radius:14px; background:rgba(255,255,255,.14);
+    padding:8px;
+  }
+  .option span{
+    display:block;
+  }
+  .option:hover{filter:brightness(1.08);}
+  .option:active, .option.pressed{transform:translateY(5px); box-shadow:0 1px 0 rgba(0,0,0,.3);}
+  .option.selected{
+    outline:3px solid var(--gold); outline-offset:3px;
+  }
+  .option .emoji{font-size:1.6rem;}
+  .option.grab{background:#00B14F;}
+  .option.panda{background:#D70F64;}
+  .option.qrph{background:#1E63C7;}
+  .option.cod{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3); box-shadow:0 6px 0 rgba(0,0,0,.18);}
+
+  .result{
+    margin-top:26px; background:var(--cream); color:var(--ink); border-radius:var(--radius-md);
+    padding:18px 20px; text-align:center; font-weight:700; font-size:.95rem;
+    box-shadow:0 8px 0 rgba(0,0,0,.25);
+    opacity:0; transform:translateY(8px); transition:opacity .3s ease, transform .3s ease;
+  }
+  .result.show{opacity:1; transform:translateY(0);}
+  .result strong{color:var(--red-bright);}
+
+  .call-btn{
+    display:block; text-align:center; margin:30px auto 0; max-width:280px;
+    font-family:'Baloo 2',sans-serif; font-weight:800; font-size:1rem;
+    background:var(--ember); color:var(--cream); text-decoration:none;
+    padding:14px 20px; border-radius:100px; box-shadow:0 5px 0 #B85906;
+  }
+  .call-btn:active{transform:translateY(4px); box-shadow:0 1px 0 #B85906;}
+</style>
+</head>
+<body>
+<div class="diag-lines"></div>
+
+<header class="topbar">
+  <img src="icon-180.png" alt="MM Chicken logo" />
+  <span>MM CHICKEN</span>
+  <a class="close-tab" href="index.html">← Back</a>
+</header>
+
+<main>
+  <h1>Order via App</h1>
+  <p class="sub">Pick where you're ordering from, and how you'll pay.</p>
+
+  <div class="group">
+    <h2>Order through</h2>
+    <p class="hint">Search "MM Chicken" once you're in the app.</p>
+    <div class="option-row" data-group="channel">
+      <button type="button" class="option grab" data-value="Grab">
+        <img src="grab.png" alt="Grab" />
+        <span>Grab</span>
+      </button>
+      <button type="button" class="option panda" data-value="foodpanda">
+        <img src="foodpanda_logo.jpeg" alt="foodpanda" />
+        <span>foodpanda</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="group">
+    <h2>Or order direct — pay with</h2>
+    <p class="hint">Message or call us, then settle payment your way.</p>
+    <div class="option-row" data-group="payment">
+      <button type="button" class="option qrph" data-value="QRPH">
+        <img src="qrph.jpeg" alt="QRPH" />
+        <span>QRPH</span>
+      </button>
+      <button type="button" class="option cod" data-value="Cash on Delivery">
+        <img src="cash-on-delivery.jpg" alt="Cash on Delivery" />
+        <span>Cash on Delivery</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <a class="call-btn" href="tel:+639197890675">📞 Call / Text 0919 789 0675</a>
+</main>
+
+<script>
+  const result = document.getElementById('result');
+  const messages = {
+    Grab: 'Great choice — open the Grab app and search <strong>"MM Chicken"</strong> to order.',
+    foodpanda: 'Great choice — open foodpanda and search <strong>"MM Chicken"</strong> to order.',
+    QRPH: "Got it — we'll send a QRPH code once your order is confirmed.",
+    'Cash on Delivery': "Got it — just have cash ready for your rider or pickup."
+  };
+
+  document.querySelectorAll('.option-row').forEach((row) => {
+    row.querySelectorAll('.option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        row.querySelectorAll('.option').forEach((b) => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        result.innerHTML = messages[btn.dataset.value] || '';
+        result.classList.add('show');
+      });
+    });
+  });
+</script>
+</body>
+</html>
